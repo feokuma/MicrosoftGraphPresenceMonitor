@@ -15,11 +15,9 @@ namespace MicrosoftToken
         {
             var tenantId = "[TENANT_ID]";
             var clientId = "[CLIENT_ID]";
-            var scopes = new string[] { "https://graph.microsoft.com/.default", "offline_access" };
+            var scopes = new string[] { "https://graph.microsoft.com/.default", "offline_access"};
             var status = 0;
             var lastActivity = "OffWork";
-            HttpResponseMessage responseMessage;
-
 
             var publicClientApplication = PublicClientApplicationBuilder
                             .Create(clientId)
@@ -31,11 +29,13 @@ namespace MicrosoftToken
                 .AcquireTokenInteractive(scopes)
                 .WithUseEmbeddedWebView(false)
                 .ExecuteAsync();
+                              
 
             var accounts = await publicClientApplication.GetAccountsAsync();
 
             var presenceUri = "https://graph.microsoft.com/beta/me/presence"
                                 .WithOAuthBearerToken(authenticationResult.AccessToken);
+            HttpResponseMessage responseMessage;
 
             while (true)
             {
@@ -53,7 +53,8 @@ namespace MicrosoftToken
                             || (presence.Activity == "OffWork"))
                             status = 3;
                         else if ((presence.Activity == "Busy")
-                            || (presence.Activity == "DoNotDisturb"))
+                            || (presence.Activity == "DoNotDisturb")
+                            || (presence.Activity == "InACall"))
                             status = 1;
                         else if (presence.Activity == "Available")
                             status = 2;
@@ -65,14 +66,18 @@ namespace MicrosoftToken
                         Console.WriteLine(JsonConvert.SerializeObject(presence, Formatting.Indented));
                     }
                 }
-                catch (FlurlHttpException ex)
-                {
+                catch(FlurlHttpException ex)
+                { 
                     authenticationResult = await publicClientApplication.AcquireTokenSilent(scopes, accounts.FirstOrDefault())
                         .WithAuthority(publicClientApplication.Authority)
                         .ExecuteAsync();
                     presenceUri = "https://graph.microsoft.com/beta/me/presence"
                         .WithOAuthBearerToken(authenticationResult.AccessToken);
                     Console.WriteLine("TOKEN REFRESHED");
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
 
                 Thread.Sleep(1000);
