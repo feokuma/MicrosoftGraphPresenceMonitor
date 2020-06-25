@@ -17,7 +17,7 @@ namespace MicrosoftToken
             var clientId = "[CLIENT_ID]";
             var scopes = new string[] { "https://graph.microsoft.com/.default", "offline_access"};
             var status = 0;
-            var lastActivity = "OffWork";
+            var lastActivity = string.Empty;
 
             var publicClientApplication = PublicClientApplicationBuilder
                             .Create(clientId)
@@ -48,16 +48,17 @@ namespace MicrosoftToken
 
                     if (lastActivity != presence.Activity)
                     {
-                        if ((presence.Activity == "Away")
+                        if (presence.Activity == "Available")
+                            status = 1;
+                        else if(presence.Activity == "Busy")
+                            status = 2;
+                        else if((presence.Activity == "DoNotDisturb")
+                            || (presence.Activity == "InACall"))
+                            status = 3; 
+                        else if((presence.Activity == "Away")
                             || (presence.Activity == "BeRightBack")
                             || (presence.Activity == "OffWork"))
-                            status = 3;
-                        else if ((presence.Activity == "Busy")
-                            || (presence.Activity == "DoNotDisturb")
-                            || (presence.Activity == "InACall"))
-                            status = 1;
-                        else if (presence.Activity == "Available")
-                            status = 2;
+                            status = 4;
 
                         var data = new { numLeds = 1, status };
 
