@@ -7,8 +7,16 @@ A proposta deste projeto é conseguir capturar o status do Microsoft Teams, envi
 
 ## Pré-requisitos
 ### Registrar um aplicativo no portal azure
-Para conseguir consumir a API do Microsoft Graph será necessário registrar uma aplicação no [Portal Azure](http://portal.azure.com) para ter o TenantId e o ClientId. Esta aplicação deverá ter as seguinte características:
 
+Para conseguir consumir a API do Microsoft Graph será necessário registrar uma aplicação no [Portal Azure](http://portal.azure.com) para ter o TenantId e o ClientId. Para isso siga o seguinte roteiro:
+
+1) Nos **Azure Services** procure por "Azure Active Directory" e entre em suas configurações
+
+2) Procure no menu lateral esquerdo a opção "App Registrations"
+
+3) Click em "New registration"
+
+4) Crie a aplicação com as seguinte características:
 - **Suported account types**: Any Azure AD Directory - Multitenant)
 - **Redirect URi**: Public client/native - http://localhost
 - **API Permissions**: Microsoft Graph - Delegated Permissions
